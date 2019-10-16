@@ -1,0 +1,29 @@
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T09:56:21+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T09:56:21+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T09:56:46+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T09:56:46+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T09:56:46+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T09:56:54+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T09:56:54+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T09:56:54+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T09:57:15+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T09:57:15+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T09:57:15+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T09:58:00+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T09:58:00+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T09:58:00+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T09:58:33+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T09:58:33+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T09:58:33+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T10:01:51+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T10:01:51+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T10:01:51+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T10:02:06+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T10:02:06+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T10:02:06+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T10:02:32+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T10:02:32+05:30"}
+{"level":"fatal","msg":"Calling panic()","time":"2019-10-01T10:02:32+05:30"}
+{"level":"info","msg":"Logging to a file.","time":"2019-10-01T10:07:26+05:30"}
+{"level":"warning","msg":"Just a warning.","time":"2019-10-01T10:07:26+05:30"}
+{"level":"panic","msg":"Panicked!!!!","time":"2019-10-01T10:07:26+05:30"}
