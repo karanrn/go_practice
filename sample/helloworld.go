@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	str "stringutils"
+	str "github.com/karanrn/go_practice/stringutils"
 )
 
 func main() {
