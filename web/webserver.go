@@ -8,12 +8,13 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 // Implementing middleware for authentication
-func authenticate(next http.Handler) http.Handler {
+func authenticationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 		if len(authHeader) != 2 {
@@ -42,8 +43,8 @@ func authenticate(next http.Handler) http.Handler {
 	})
 }
 
-// simple middleware
-func logToFile(next http.Handler) http.Handler {
+// logging middleware
+func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		file, err := os.OpenFile("access.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
@@ -52,13 +53,14 @@ func logToFile(next http.Handler) http.Handler {
 		}
 		defer file.Close()
 
-		file.WriteString("You will be authenticated first")
+		fmt.Fprintf(file, "%v: You will be authenticated first.\n", time.Now())
 		next.ServeHTTP(w, r)
+		fmt.Fprintf(file, "%v: You are done.\n", time.Now())
 	})
 }
 
 func main() {
-	http.Handle("/", logToFile(authenticate(http.HandlerFunc(handler))))
+	http.Handle("/", loggingMiddleware(authenticationMiddleware(http.HandlerFunc(handler))))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
