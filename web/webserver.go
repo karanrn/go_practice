@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -41,8 +42,23 @@ func authenticate(next http.Handler) http.Handler {
 	})
 }
 
+// simple middleware
+func logToFile(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		file, err := os.OpenFile("access.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			fmt.Fprintf(w, "failed to open file: %v", err)
+			return
+		}
+		defer file.Close()
+
+		file.WriteString("You will be authenticated first")
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
-	http.Handle("/", authenticate(http.HandlerFunc(handler)))
+	http.Handle("/", logToFile(authenticate(http.HandlerFunc(handler))))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
