@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/time/rate"
+
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -59,9 +61,36 @@ func loggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// limiters
+var limiters = make(map[string]*rate.Limiter)
+
+func init() {
+	limiters["Authorized"] = rate.NewLimiter(2, 10)
+	limiters["Unauthorized"] = rate.NewLimiter(1, 3)
+}
+
+// RateLimitMiddleware .
+func RateLimitMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Authorization") == "JOHN_SNOW" {
+			if !limiters["Authorized"].Allow() {
+				http.Error(w, http.StatusText(429), http.StatusTooManyRequests)
+				return
+			}
+		} else {
+			if !limiters["Unauthorized"].Allow() {
+				http.Error(w, http.StatusText(429), http.StatusTooManyRequests)
+				return
+			}
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
 func main() {
-	http.Handle("/", loggingMiddleware(authenticationMiddleware(http.HandlerFunc(handler))))
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(":8080", RateLimitMiddleware(mux)))
 }
 
 // handler echoes the path component
