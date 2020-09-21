@@ -5,6 +5,18 @@ import (
 	"net/http"
 )
 
+// MapHandler maps keys to URLs, redirects if path exists in the map
+func MapHandler(pathToURLs map[string]string, fallback http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+		if url, ok := pathToURLs[path]; ok {
+			http.Redirect(w, r, url, http.StatusMovedPermanently)
+			return
+		}
+		fallback.ServeHTTP(w, r)
+	}
+}
+
 // NewBaseURLMapper maps keys to URLs, returns true if url exists
 func NewBaseURLMapper(urls map[string]string) func(string) (string, bool) {
 	return func(path string) (string, bool) {
