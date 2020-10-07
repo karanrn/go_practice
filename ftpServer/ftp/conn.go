@@ -10,11 +10,11 @@ import (
 
 // Conn represents a connection to FTP server
 type Conn struct {
-	conn     net.Conn
-	binary   bool
-	dataPort *dataPort
-	rootDir  string
-	workDir  string
+	conn         net.Conn
+	binary       bool
+	dataHostPort string
+	rootDir      string
+	workDir      string
 }
 
 // NewConn returns a FTP connection
@@ -45,23 +45,27 @@ const (
 // Serve scans for incoming commands and routes them to handler function
 func (c *Conn) Serve() {
 	c.writeln(status220)
-
+	var cmd string
+	var args []string
 	s := bufio.NewScanner(c.conn)
 	for s.Scan() {
-		input := strings.Fields(s.Text())
-		if len(input) == 0 {
+		fields := strings.Fields(s.Text())
+		if len(fields) == 0 {
 			continue
 		}
+		cmd = strings.ToUpper(fields[0])
+		args = nil
+		if len(fields) > 1 {
+			args = fields[1:]
+		}
+		log.Printf("<< %s %v", cmd, args)
 
-		command, args := input[0], input[1:]
-		log.Printf("<< %s %v", command, args)
-
-		switch command {
-		case "CWD": // cd
+		switch cmd {
+		case "CWD":
 			//c.cwd(args)
-		case "RETR": // get
+		case "RETR":
 			//c.retr(args)
-		case "LIST": // ls
+		case "LIST":
 			c.list(args)
 		case "TYPE":
 			//c.setDataType(args)
@@ -71,9 +75,6 @@ func (c *Conn) Serve() {
 			c.writeln(status215)
 		case "PORT":
 			c.Port(args)
-		case "LPRT":
-			// TODO: Implement LPRT
-			c.writeln(c.dataPort.toAddress())
 		case "QUIT":
 			c.writeln(status221)
 			return
@@ -89,7 +90,7 @@ func (c *Conn) Serve() {
 // writeln writes to ftp connection
 func (c *Conn) writeln(msg string) {
 	log.Print(">> ", msg)
-	_, err := fmt.Fprintf(c.conn, msg, c.EOL())
+	_, err := fmt.Fprintf(c.conn, msg+c.EOL())
 	if err != nil {
 		log.Print(err)
 	}
@@ -98,14 +99,13 @@ func (c *Conn) writeln(msg string) {
 // Port sets port for ftp connection
 func (c *Conn) Port(args []string) {
 	if len(args) != 1 {
-		c.writeln(status501)
+		c.writeln("501 Usage: PORT a,b,c,d,p1,p2")
 		return
 	}
 	var err error
-	c.dataPort, err = dataPortFromHostPort(args[0])
+	c.dataHostPort, err = hostPortFromFTP(args[0])
 	if err != nil {
-		log.Printf("cmd: PORT, err: %v", err)
-		c.writeln(status501)
+		c.writeln("501 Can't parse address.")
 		return
 	}
 	c.writeln(status200)

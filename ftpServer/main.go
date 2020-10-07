@@ -23,7 +23,7 @@ func main() {
 		if err != nil {
 			log.Print("Accepting new connection:", err)
 		}
-		go handleConn(c)
+		go ftp.NewConn(c, "/home/karan/Downloads/Books").Serve()
 	}
 }
 

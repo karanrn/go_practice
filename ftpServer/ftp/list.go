@@ -32,7 +32,7 @@ func (c *Conn) list(args []string) {
 	defer dataConn.Close()
 
 	for _, file := range files {
-		_, err := fmt.Fprintf(dataConn, file.Name(), c.EOL())
+		_, err := fmt.Fprintf(dataConn, file.Name()+c.EOL())
 		if err != nil {
 			log.Print(err)
 			c.writeln(status426)
