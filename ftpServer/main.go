@@ -23,13 +23,13 @@ func main() {
 		if err != nil {
 			log.Print("Accepting new connection:", err)
 		}
-		go ftp.NewConn(c, "/home/karan/Downloads/Books").Serve()
+		go handleConn(c)
 	}
 }
 
 func handleConn(c net.Conn) {
 	defer c.Close()
-	absPath, err := filepath.Abs("/home/karan/Downloads/Books")
+	absPath, err := filepath.Abs("/home/karan/Downloads")
 	if err != nil {
 		log.Fatal(err)
 	}

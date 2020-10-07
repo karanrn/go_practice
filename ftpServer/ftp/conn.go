@@ -62,13 +62,13 @@ func (c *Conn) Serve() {
 
 		switch cmd {
 		case "CWD":
-			//c.cwd(args)
+			c.cwd(args)
 		case "RETR":
-			//c.retr(args)
+			c.retr(args)
 		case "LIST":
 			c.list(args)
 		case "TYPE":
-			//c.setDataType(args)
+			c.setDataType(args)
 		case "USER":
 			c.writeln(status230)
 		case "SYST":
@@ -94,21 +94,6 @@ func (c *Conn) writeln(msg string) {
 	if err != nil {
 		log.Print(err)
 	}
-}
-
-// Port sets port for ftp connection
-func (c *Conn) Port(args []string) {
-	if len(args) != 1 {
-		c.writeln("501 Usage: PORT a,b,c,d,p1,p2")
-		return
-	}
-	var err error
-	c.dataHostPort, err = hostPortFromFTP(args[0])
-	if err != nil {
-		c.writeln("501 Can't parse address.")
-		return
-	}
-	c.writeln(status200)
 }
 
 // EOL returns the line terminator matching the FTP standard for the datatype.
