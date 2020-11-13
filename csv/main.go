@@ -25,7 +25,8 @@ func main() {
 		fmt.Printf("error while opening file: %v", err.Error())
 		return
 	}
-
+	defer csvFile.Close()
+	
 	r := csv.NewReader(bufio.NewReader(csvFile))
 	var customers []Customer
 
