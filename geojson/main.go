@@ -49,6 +49,8 @@ type featureCollection struct {
 	Features []geojson `json:"features"`
 }
 
+// Contains preforms linear search on the data
+//func Contains()
 func main() {
 
 	data, err := ioutil.ReadFile("./IndianStates.json")
@@ -65,15 +67,18 @@ func main() {
 		return
 	}
 
+	/*
 	// List all states
 	for _, state := range featureSet.Features {
 		fmt.Println(state.Properties.NAME1)
 	}
+	*/
 
 	// [93.789047, 6.852571]
-	var stateLoc stateCoordinates
+	// Unmarshall coordinates from the geoJson data
+	var stateMap []stateCoordinates
 	for _, s := range featureSet.Features {
-		/*
+		var stateLoc stateCoordinates
 		if s.Geometry.GeometryType == "MultiPolygon" {
 			stateLoc.State =  s.Properties.NAME1
 			for _, g1 := range s.Geometry.Coordinates[0][0]  {
@@ -96,7 +101,7 @@ func main() {
 				stateLoc.Location = append(stateLoc.Location, geoLoc)
 			}
 		}
-		*/
+		
 		if s.Geometry.GeometryType == "Polygon" {
 			stateLoc.State =  s.Properties.NAME1
 			for _, g2 := range s.Geometry.Coordinates[0]  {
@@ -108,11 +113,17 @@ func main() {
 				stateLoc.Location = append(stateLoc.Location, geoLoc)
 			}
 		}
+
+		stateMap = append(stateMap, stateLoc)
 		
 	}
-
-	for _, state := range stateLoc {
-		fmt.Printf("%v : %v", state.State, len(state.Location))
+	
+	for _, state := range stateMap {
+		//fmt.Printf("%v:%v\n", state.State, len(state.Location))
+		fmt.Printf("%v: \n Max - %v, %v \n Min - %v, %v",)
 	}
 	
+	// Check for the location and return the state
 }
+
+func minLoc(gLocs []geoLocation) 
