@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"reflect"
+	_ "reflect"
 )
 
 type geoProperty struct {
@@ -24,8 +24,8 @@ type geoProperty struct {
 }
 
 type geoLocation struct {
-	Lat float32
-	Lon float32
+	Lat float64
+	Lon float64
 }
 
 type stateCoordinates struct {
@@ -71,23 +71,48 @@ func main() {
 	}
 
 	// [93.789047, 6.852571]
+	var stateLoc stateCoordinates
 	for _, s := range featureSet.Features {
-		//var stateLoc stateCoordinates
-
+		/*
 		if s.Geometry.GeometryType == "MultiPolygon" {
-			//fmt.Println(s.Properties.NAME1, s.Geometry.Coordinates[0][0])
-			for _, g1 := range s.Geometry.Coordinates[0][0] {
-				fmt.Println(reflect.TypeOf(g1), g1)
-				/*
-					stateLoc.State = s.Properties.NAME1
-					stateLoc.Location[i].Lat = g1
-				*/
+			stateLoc.State =  s.Properties.NAME1
+			for _, g1 := range s.Geometry.Coordinates[0][0]  {
+				points, ok := g1.([]interface{})
+				if !ok {
+					fmt.Errorf("not a valid position, got %v", g1)
+				}
+				gdata := make([]float64, 0 , len(points))
+				for _, coord := range points {
+					if f, ok := coord.(float64); ok {
+						gdata = append(gdata, f)
+					} else {
+						fmt.Errorf("not a valid coordinate, got %v", coord)
+					}
+				}
+				geoLoc := geoLocation{
+					Lat: gdata[0],
+					Lon: gdata[1],
+				}
+				stateLoc.Location = append(stateLoc.Location, geoLoc)
 			}
 		}
-		/*
-			if s.Geometry.GeometryType == "Polygon" {
-				fmt.Println("Polygon:", s.Properties.NAME1, s.Geometry.Coordinates[0][0])
-			}
 		*/
+		if s.Geometry.GeometryType == "Polygon" {
+			stateLoc.State =  s.Properties.NAME1
+			for _, g2 := range s.Geometry.Coordinates[0]  {
+				
+				geoLoc := geoLocation{
+					Lat: g2[0].(float64),
+					Lon: g2[1].(float64),
+				}
+				stateLoc.Location = append(stateLoc.Location, geoLoc)
+			}
+		}
+		
 	}
+
+	for _, state := range stateLoc {
+		fmt.Printf("%v : %v", state.State, len(state.Location))
+	}
+	
 }
