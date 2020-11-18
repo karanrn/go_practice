@@ -38,7 +38,7 @@ type geoGeometry struct {
 	Coordinates  [][][]interface{} `json:"coordinates"`
 }
 
-type geojson struct {
+type geoJSON struct {
 	GeoType    string      `json:"type"`
 	Properties geoProperty `json:"properties"`
 	Geometry   geoGeometry `json:"geometry"`
@@ -46,7 +46,7 @@ type geojson struct {
 
 type featureCollection struct {
 	FType    string    `json:"type"`
-	Features []geojson `json:"features"`
+	Features []geoJSON `json:"features"`
 }
 
 // Contains preforms linear search on the data
@@ -68,10 +68,10 @@ func main() {
 	}
 
 	/*
-	// List all states
-	for _, state := range featureSet.Features {
-		fmt.Println(state.Properties.NAME1)
-	}
+		// List all states
+		for _, state := range featureSet.Features {
+			fmt.Println(state.Properties.NAME1)
+		}
 	*/
 
 	// [93.789047, 6.852571]
@@ -80,13 +80,13 @@ func main() {
 	for _, s := range featureSet.Features {
 		var stateLoc stateCoordinates
 		if s.Geometry.GeometryType == "MultiPolygon" {
-			stateLoc.State =  s.Properties.NAME1
-			for _, g1 := range s.Geometry.Coordinates[0][0]  {
+			stateLoc.State = s.Properties.NAME1
+			for _, g1 := range s.Geometry.Coordinates[0][0] {
 				points, ok := g1.([]interface{})
 				if !ok {
 					fmt.Errorf("not a valid position, got %v", g1)
 				}
-				gdata := make([]float64, 0 , len(points))
+				gdata := make([]float64, 0, len(points))
 				for _, coord := range points {
 					if f, ok := coord.(float64); ok {
 						gdata = append(gdata, f)
@@ -101,11 +101,11 @@ func main() {
 				stateLoc.Location = append(stateLoc.Location, geoLoc)
 			}
 		}
-		
+
 		if s.Geometry.GeometryType == "Polygon" {
-			stateLoc.State =  s.Properties.NAME1
-			for _, g2 := range s.Geometry.Coordinates[0]  {
-				
+			stateLoc.State = s.Properties.NAME1
+			for _, g2 := range s.Geometry.Coordinates[0] {
+
 				geoLoc := geoLocation{
 					Lat: g2[0].(float64),
 					Lon: g2[1].(float64),
@@ -115,15 +115,15 @@ func main() {
 		}
 
 		stateMap = append(stateMap, stateLoc)
-		
+
 	}
-	
+
 	for _, state := range stateMap {
 		//fmt.Printf("%v:%v\n", state.State, len(state.Location))
-		fmt.Printf("%v: \n Max - %v, %v \n Min - %v, %v",)
+		fmt.Printf("%v: \n Max - %v, %v \n Min - %v, %v")
 	}
-	
+
 	// Check for the location and return the state
 }
 
-func minLoc(gLocs []geoLocation) 
+func minLoc(gLocs []geoLocation)
