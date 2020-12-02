@@ -2,6 +2,7 @@ package main
 
 /*
 https://golangcode.com/is-point-within-polygon-from-geojson/
+https://www.geeksforgeeks.org/find-the-centroid-of-a-non-self-intersecting-closed-polygon/
 
 */
 import (
@@ -18,6 +19,10 @@ const (
 	GEOFILE = "IndianStates.json"
 )
 
+/*
+East to West (Lat) : 98 to 70
+North to South (Lon): 36 to 8
+*/
 type loc struct {
 	Lat float64
 	Lon float64
