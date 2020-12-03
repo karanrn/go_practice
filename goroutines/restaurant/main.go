@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -22,26 +25,29 @@ func main() {
 	// Orders ready to be served
 	outOrder := make(chan int, 50)
 
-	wg.Add(150)
-	for i := 1; i <= 100; i++ {
-		inOrder <- i
-		go takeOrder(inOrder, cookFood)
-		go cookOrder(cookFood, outOrder)
-		go serveOrder(outOrder)
-	}
-	wg.Wait()
+	//wg.Add(150)
+	i := 0
+	inOrder <- i
+	go takeOrder(inOrder, cookFood)
+	go cookOrder(cookFood, outOrder)
+	go serveOrder(outOrder)
+	i++
+	//wg.Wait()
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	<-c
 
 }
 
 func takeOrder(inOrder chan int, cookFood chan int) {
-	defer wg.Done()
+	//defer wg.Done()
 	table := <-inOrder
 	fmt.Printf("Order for table %d is placed.\n", table)
 	cookFood <- table
 }
 
 func cookOrder(cookFood chan int, outOrder chan int) {
-	defer wg.Done()
+	//defer wg.Done()
 	table := <-cookFood
 	fmt.Printf("Order for table %d is cooking.\n", table)
 	time.Sleep(time.Second * 2) // Cooking time
@@ -49,7 +55,7 @@ func cookOrder(cookFood chan int, outOrder chan int) {
 }
 
 func serveOrder(outOrder chan int) {
-	defer wg.Done()
+	//defer wg.Done()
 	table := <-outOrder
 	fmt.Printf("Order for table %d is served.\n", table)
 }
