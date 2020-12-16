@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 type listNode struct {
@@ -42,21 +43,29 @@ func addTwoNumbers(l1 *listNode, l2 *listNode) *listNode {
 		if res == nil {
 			res = temp
 		} else {
-			current := res
-			for current.Next != nil {
-				current = current.Next
-			}
-			current.Next = temp
-		}
-
-		if l1 == nil && l2 == nil {
-			if carry != 0 {
-				temp = &listNode{Val: carry}
+			temp.Next = res
+			res = temp
+			/*
 				current := res
 				for current.Next != nil {
 					current = current.Next
 				}
 				current.Next = temp
+			*/
+		}
+
+		if l1 == nil && l2 == nil {
+			if carry != 0 {
+				temp = &listNode{Val: carry}
+				temp.Next = res
+				res = temp
+				/*
+					current := res
+					for current.Next != nil {
+						current = current.Next
+					}
+					current.Next = temp
+				*/
 			}
 			break
 		}
@@ -73,7 +82,11 @@ func main() {
 	node2.Next = &node3
 
 	node4 := node2
+	start := time.Now()
 	res := addTwoNumbers(&node1, &node4)
+	elapsed := time.Now().Sub(start)
+
+	fmt.Printf("Program took: %d ns\n", elapsed.Nanoseconds())
 
 	if res != nil {
 		for {
@@ -85,4 +98,5 @@ func main() {
 			}
 		}
 	}
+
 }
