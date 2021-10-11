@@ -1,0 +1,11 @@
+I am {{ .Name }}, aged {{ .Age }}.
+And I hail from {{ .Country }}
+
+I am skilled in below tools/technologies:
+{{ range .Skills }}
+{{ if (eq . "C#") }}
+* C# and .NetCore
+{{ else }}
+* {{ . }}
+{{ end }}
+{{ end }}
